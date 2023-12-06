@@ -9,8 +9,8 @@ for line in text:
         continue
     line = re.split('\n', line.strip())
     numbers.append([[int(i) for i in x.split(' ')] for x in line])
-for seed in numbers[0][0]:
-    destination = seed
+for x in range(0,len(numbers[0][0]),2):
+    destination = numbers[0][0][x] + numbers[0][0][x+1]-1
     for i in range(1, len(numbers)):
         for num in numbers[i]:
             if num[1] <= destination < (num[1]+num[2]):

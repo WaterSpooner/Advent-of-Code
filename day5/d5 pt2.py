@@ -10,38 +10,31 @@ for line in text:
     numbers.append([[int(i) for i in x.split(' ')] for x in line])
 
 seeds = numbers.pop(0)[0]
-oldDestination = {}
-seedRange =[]
-
+source =[]
+destination = []
 for i in range(0,len(seeds),2):
-    oldDestination[(seeds[i], seeds[i]+seeds[i+1]-1)] = (seeds[i], seeds[i]+seeds[i+1]-1)
+    destination.append((seeds[i], seeds[i]+seeds[i+1]-1))
 
 for numList in numbers:
-    destination = dict.fromkeys(oldDestination.values(),9999999999999999999)
-    seedRange = list(destination.keys())
-    for seed in seedRange:
+    source = destination
+    destination = []
+    seedList= source.copy()
+    for seed in source:
          for num in numList:
             if num[1] <= seed[0] < (num[1]+num[2]):
                 if num[1] <= seed[1] < (num[1]+num[2]):
-                        destination[seed] = (seed[0] - num[1] + num[0],seed[1] - num[1] + num[0]) if destination[seed][0] > (seed[0] - num[1] + num[0]) else destination[seed]
+                        destination.append((seed[0] - num[1] + num[0],seed[1] - num[1] + num[0]))
+                        seedList.remove(seed)
                 else:
-                    if destination[seed] != 9999999999999999999:
-                        destination[seed] = -2
-                    destination[(seed[0],num[1]+num[2]-1)] = (seed[0] - num[1] + num[0],seed[1] - num[1] + num[0]-1) 
-                    destination[(num[1]+num[2],seed[1])] = 9999999999999999999
-                    seedRange.append((num[1]+num[2],seed[1]))
-    for dest in destination.keys():
-        if destination[dest] == 9999999999999999999:
-            destination[dest] = dest
-    destination = {k:v for k,v in destination.items() if v != -2}
-    oldDestination = destination
+                    seedList.remove(seed)
+                    destination.append((seed[0] - num[1] + num[0],num[0]+num[2]-1)) 
+                    source.append((num[1]+num[2],seed[1]))
+                    seedList.append((num[1]+num[2],seed[1]))
+    for seed in seedList:
+        destination.append(seed)
 
-
-
-values = list(destination.values())
-print(values)
-lowest = values[0][0]
-for v in values:
+lowest = destination[0][0]
+for v in destination:
     if v[0] < lowest:
         lowest = v[0]
 print(lowest)
