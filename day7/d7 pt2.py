@@ -22,6 +22,7 @@ def greatestHand(hand,amount,secondAmount = -1):
                     pairs +=1
             if pairs == 2:
                 return True
+            return False
         else:
             for card in hand.keys():
                 if hand[card] == 2:
