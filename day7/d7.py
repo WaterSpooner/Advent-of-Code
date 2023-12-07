@@ -1,13 +1,24 @@
 import re
-cardValue = {'A':12,'K':11,'Q':10,'J':9,'T':8,'9':7,'8':6,'7':5,'6':4,'5':3,'4':2,'3':1,'2':0}    
-def greatestHand(hand,amount):
-    maxAmount = -1
-    maxCard = ''
-    for card in hand:
-        if hand[card] == amount and maxAmount < cardValue[card]:
-            maxCard = card
-            maxAmount = cardValue[card]
-    return (maxCard,maxAmount)
+from collections import Counter
+cardValue = {'A':13,'K':12,'Q':11,'J':10,'T':9,'9':8,'8':7,'7':6,'6':5,'5':4,'4':3,'3':2,'2':1}    
+def greatestHand(hand,amount,twoPair=False):
+    pairCount = 0
+    for card in hand.keys():
+        if hand[card] == amount:
+            if not twoPair:
+                return True
+            pairCount +=1
+    if twoPair and pairCount == 2:
+        return True
+    return False
+
+def calculateValue(hand,handValue):
+    value = 0
+    handLen = len(hand)
+    for i in range(handLen):
+        value += (cardValue[hand[i]]) * (14**(5-i-1))
+    value += (handValue) * (14**(handLen))
+    return value
 
 file = open("day7/input.txt", "r")
 text = file.read()
@@ -16,22 +27,28 @@ for line in text.split('\n'):
     l = line.split(' ')
     hands[l[0]] = int(l[1]) 
 handValues ={}
+
 for hand in hands.keys():
     cards ={}
     for card in hand:
         cards[card] = cards.get(card,0)+1
-    for i in range(4,-1,-1):
-        value = greatestHand(cards,i)
-        if i == 3 and value[0] != '' and greatestHand(cards,i-1)[0] != '':
-            handValues[hand] = 4*13 + value[1]
-            break
-        if value[0] != '':
-            handValues[hand] = (i+1)*13 + value[1] if i == 4 else i*13 + value[1]
-            break
-i= len(hands)
-while len(handValues) > 0:
+    validCards = []
+    validCards.append(greatestHand(cards,5))
+    validCards.append(greatestHand(cards,4))
+    validCards.append(greatestHand(cards,3) and greatestHand(cards,2))
+    validCards.append(greatestHand(cards,3))
+    validCards.append(greatestHand(cards,2,True))
+    validCards.append(greatestHand(cards,2))
+    validCards.append(greatestHand(cards,1))
+    score = len(validCards) - validCards.index(True)
+    handValues[hand] = calculateValue(hand,score)
+
+i = len(hands)
+total = 0
+while i > 0:
     hand = max(handValues, key=handValues.get)
-    hands[hand] =hands[hand] * i
+    #print(i,hand,hands[hand])
+    total += hands[hand] * i
     i-=1
-    del handValues[hand]
-print(sum(hands.values()))
+    handValues[hand] = -1
+print(total)
