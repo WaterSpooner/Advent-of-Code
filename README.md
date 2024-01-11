@@ -15,14 +15,14 @@ Welcome to the Advent of Code 2023! This repository contains my Python solutions
 - [x] Day 9
 - [x] Day 10
 - [x] Day 11
-- [] Day 12
+- [ ] Day 12
 - [x] Day 13
 - [x] Day 14
 - [x] Day 15
 - [x] Day 16
-- [] Day 17
+- [ ] Day 17
 - [x] Day 18
-- [] Day 19
+- [ ] Day 19
 - [ ] Day 20
 - [x] Day 21
 - [ ] Day 22
